@@ -1,18 +1,59 @@
-.container {
+.view {
 	border: 1px solid black;
-	height: 400px;
-	width: 600px;
+	height: 600px;
+	width: 800px;
 }
 
 .component {
 	border: 1px solid black;
 	display: inline-block;
+	position: relative;
+}
+
+.label {
+	display: block;
+	height: 15%;
+	width: 100px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+
+.AudioNode {
+	width: 200px;
+	height: 150px;
+	white-space: nowrap;
+	margin: 10px 50px 10px 50px;
+}
+
+.AudioDestinationNode {
+	float: right;
+}
+
+.container {
+	background-color: #DDD;
+	display: inline-block;
+	height: 100%;
+	width: 48%;
+	margin: 1% 1% 1% 1%;
 }
 
 .input {
 	border: 1px solid green;
+	float: left;
+	left: -25px;
 }
 
 .output {
 	border: 1px solid red;
+	float: right;
+	right: -25px;
+}
+
+
+.input, .output {
+	background-color: gray;
+	display: block;
+	position: relative;
+	margin: 2px;
 }

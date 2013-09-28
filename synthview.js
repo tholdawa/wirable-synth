@@ -1,7 +1,7 @@
 /*global $*/
 
 var SynthViewController = ( function() {
-	var viewObjects;
+	var viewObjectMakers;
 
 	function SynthViewController( model ) {
 		this.contents = [];
@@ -42,20 +42,80 @@ var SynthViewController = ( function() {
 			.call( this, update );
 	};
 
-	viewObjects = {
-		AudioDestinationNode: { 'class' : 'component input' },
-		OscillatorNode: {'class' : 'component output' },
-		SynthModel: { 'class' : 'container' },
-		String: { 'class' : 'component string' }
+	viewObjectMakers = {
+		_baseComponent : function( modelObject ) {
+			return $('<div>')
+				.addClass('component ' + modelObject.constructor.name )
+				.append('<div class="label">' +
+						modelObject.constructor.name + '</div>');
+		},
+		default : function( modelObject ) {
+			return viewObjectMakers._baseComponent( modelObject )
+				.addClass('unknown');
+		},
+		AudioNode : function( modelObject ) {
+			var uuid,
+				param,
+				$param,
+				$input,
+				$output,
+				$viewObject = viewObjectMakers._baseComponent( modelObject )
+					.addClass('AudioNode'),
+				$inputs = $('<div>').addClass('inputs container'),
+				$outputs = $('<div>').addClass('outputs container'),
+				$inOuts = $('<div>').addClass('inOuts');
+
+			for ( uuid in modelObject.PARAMIDs ) {
+				param = modelObject.PARAMIDs [ uuid ];
+				$param = $('<div>')
+					.addClass('input paramInput')
+					.text( 'Param: ' +  param.name )
+					.attr( 'data-type' , 'param' )
+					.attr( 'data-input' , uuid );
+				$inputs.append( $param );
+			};
+
+			for ( uuid in modelObject.INPUTIDs ) {
+				$input = $('<div>')
+					.addClass('input audioInput')
+					.text( 'input ' + modelObject.INPUTIDs [ uuid ] )
+					.attr( 'data-type' , 'input' )
+					.attr( 'data-input' , uuid );
+				$inputs.append( $input );
+			};
+
+			for ( uuid in modelObject.OUTPUTIDs ) {
+				$output = $('<div>')
+					.addClass('output audioOutput')
+						.text( 'output ' + modelObject.OUTPUTIDs [ uuid ] )
+						.attr( 'data-type' , 'output' )
+						.attr( 'data-output' , uuid );
+				$outputs.append( $output );
+			};
+
+			$viewObject.append( $inOuts.append( $inputs , $outputs ) );
+
+			return $viewObject;
+		},
+		SynthModel : function( modelObject ) {
+			return $('<div>').addClass('view');
+		}
 	};
 
 
 	function getViewObject( modelObject ) {
-		var obj = viewObjects [ modelObject.constructor.name ];
 
-		return $('<div />')
-			.addClass( obj ['class'] )
-			.text( modelObject.constructor.name );
+		var viewType, $viewObject;
+
+		viewType = modelObject instanceof AudioNode ?
+			'AudioNode' :
+			modelObject.constructor.name;
+
+
+		$viewObject = ( viewObjectMakers [ viewType ] ||
+				  viewObjectMakers.default )( modelObject );
+
+		return $viewObject;
 	}
 
 
