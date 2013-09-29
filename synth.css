@@ -40,6 +40,7 @@
 	display: inline-block;
 	position: relative;
 	font-family: monospace;
+	cursor: pointer;
 }
 
 .label {
@@ -104,6 +105,8 @@
 	line-height: 1.5em;
 	color: red;
 	text-shadow: black 1px 1px 10px;
+
+	cursor: crosshair;
 }
 
 .param {
@@ -118,4 +121,8 @@
 	width: 25px;
 	border: 1px solid black;
 
+}
+
+.connected {
+	outline: 3px outset pink;
 }

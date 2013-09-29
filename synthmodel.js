@@ -8,6 +8,7 @@ var SynthModel = ( function() {
 		this.inputs = {};
 		this.outputs = {};
 		this.components = {};
+		this.connections = {};
 		this.controller = controller;
 		controller && (controller.model = this);
 
@@ -56,7 +57,7 @@ var SynthModel = ( function() {
 					obj.INPUTIDs [ uuid ] = i;
 					this.inputs [ uuid ] = {
 						"AudioNode" : obj,
-						"Index" : i
+						"index" : i
 					};
 				}.bind( this ));
 
@@ -66,16 +67,47 @@ var SynthModel = ( function() {
 					obj.OUTPUTIDs [ uuid ] = i;
 					this.outputs [ uuid ] = {
 						"AudioNode" : obj,
-						"Index" : i
+						"index" : i
 					};
 				}.bind( this ));
 		}
 
 		obj.UUID = util.uuid();
 
-
-		this.controller.update({ type : 'add', object : obj });
 		this.components [ obj.UUID ] = obj;
+		this.controller.update({ type : 'add', object : obj });
+	};
+
+	SynthModel.prototype.connect = function( sourceID , targetID ) {
+		var source = this.outputs [ sourceID ],
+			target = this.inputs [ targetID ];
+
+		assert( typeof source !== 'undefined', 'invalid source' );
+		assert( typeof target !== 'undefined' , 'invalid target' );
+
+		if ( source.AudioNode ) {
+			if ( target.AudioNode ) {
+				source.AudioNode.connect( target.AudioNode ,
+										  source.index ,
+										  target.index );
+			}
+			else if ( target.AudioParam ) {
+				source.AudioNode.connect( target.AudioParam ,
+										  source.index );
+			}
+		}
+
+		this.connections [ sourceID ] =
+			this.connections [ sourceID ] || {};
+		this.connections [ sourceID ] [ targetID ] = true;
+
+		this.controller.update({
+			type : 'connect',
+			sourceID : sourceID,
+			targetID : targetID
+		});
+
+
 	};
 
 	return SynthModel;

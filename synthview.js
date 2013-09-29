@@ -63,6 +63,11 @@ var SynthViewController = ( function() {
 			this.$view.append( $viewObj );
 			this.contents [ update.object.UUID ] =
 				{view : $viewObj, model :  update.object };
+		},
+		connect : function ( update ) {
+			console.log( 'Got connection : ' + update.toString() );
+			$('#' + update.sourceID + ', #' + update.targetID)
+				.addClass('connected');
 		}
 	};
 
