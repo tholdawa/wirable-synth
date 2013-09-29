@@ -15,8 +15,19 @@ var SynthModel = ( function() {
 		this.destination = context.destination;
 	}
 
+	var manipulators = {
+		add : function( change ) {
+			this.add ( context [ change.value ]() );
+		},
+		undefined : function ( value ) {
+			console.log('Unknown change : ' + value.toString() );
+		}
+	};
+
 	SynthModel.prototype.manipulate = function( change ) {
-		console.log("Model got change: " + change );
+		//console.log("Model got change: " + change );
+		var type = change.type || 'undefined';
+		manipulators [ type ].bind( this )( change );
 	};
 
 	SynthModel.prototype.add = function( obj ){

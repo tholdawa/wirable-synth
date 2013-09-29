@@ -1,7 +1,36 @@
+.toolbar {
+	border: 1px solid black;
+	height: 25px;
+	width: 1000px;
+	margin-bottom: -1px;
+}
+
+.button {
+	height: 23px;
+	width: 23px;
+	border: 1px solid black;
+	border-radius: 5px;
+	display: inline-block;
+}
+
+.sprite {
+	background: url(sprite.png) no-repeat;
+}
+
+.createOscillator {
+	background-position: 0 -2px;
+}
+.createGain {
+	background-position: 0 -26px;
+}
+.createBiquadFilter {
+	background-position: -1px -50px;
+}
+
 .view {
 	border: 1px solid black;
-	height: 600px;
-	width: 800px;
+	height: 400px;
+	width: 1000px;
 }
 
 .component {
@@ -21,7 +50,7 @@
 
 .AudioNode {
 	width: 200px;
-	height: 150px;
+	height: auto;
 	white-space: nowrap;
 	margin: 10px 50px 10px 50px;
 }
@@ -30,9 +59,15 @@
 	float: right;
 }
 
+.inOuts {
+	position: relative;
+}
+
 .container {
+	position: relative;
 	background-color: #DDD;
 	display: inline-block;
+	vertical-align: middle;
 	height: 100%;
 	width: 48%;
 	margin: 1% 1% 1% 1%;

@@ -6,6 +6,7 @@ var SynthViewController = ( function() {
 	function SynthViewController( model ) {
 		this.contents = [];
 		this.model = model;
+		this.container = document.body;
 		model && (model.controller = this);
 
 		this.initView();
@@ -15,24 +16,51 @@ var SynthViewController = ( function() {
 	SynthViewController.prototype.initView = function() {
 		var model = this.model;
 
+		this.drawToolbar();
+
 		// draw view container
-		this.$container = getViewObject( model );
-		$( 'body' ).append( this.$container );
+		this.$view = getViewObject( model );
+		$( this.container ).append( this.$view );
 
 		//this.$output = $( getViewObject( model.destination ) );
-		//this.$container.append( this.$output );
+		//this.$view.append( this.$output );
 
 		// click handler for components
-		this.$container.on('click', '.component', function () {
+		this.$view.on('click', '.component', function () {
 			console.log('cliked');
 			model.manipulate( $( this ).text() );
 		});
 	};
 
+	SynthViewController.prototype.drawToolbar = function(){
+		var buttons = [
+			{ value : 'createOscillator' , type : 'add' },
+			{ value : 'createGain', type : 'add' },
+			{ value : 'createBiquadFilter', type : 'add' }
+		],
+			$toolbar = $('<div>').addClass('toolbar'),
+			self = this;
+
+		buttons.forEach( function( def ) {
+			$toolbar.append(
+				$('<div>').addClass( 'button sprite ' + def.value )
+					.attr( 'data-type' , def.type )
+					.attr( 'data-value' , def.value )
+					.click( function () {
+						self.model.manipulate( def );
+					})
+			);
+		});
+
+		$( this.container ).append( $toolbar );
+
+	};
+
+
 	var	updateActions = {
 		add : function ( update ) {
 			var $viewObj =  getViewObject( update.object) ;
-			this.$container.append( $viewObj );
+			this.$view.append( $viewObj );
 			this.contents.push({view : $viewObj, model :  update.object });
 		}
 	};
