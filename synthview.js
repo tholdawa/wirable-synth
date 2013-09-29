@@ -105,8 +105,8 @@ var SynthViewController = ( function() {
 
 			for ( uuid in modelObject.INPUTIDs ) {
 				$input = $('<div>')
-					.addClass('input audioInput')
-					.text( 'input ' + modelObject.INPUTIDs [ uuid ] )
+					.addClass('sprite input audioInput')
+					.text( modelObject.INPUTIDs [ uuid ] )
 					.attr( 'data-type' , 'input' )
 					.attr( 'data-input' , uuid );
 				$inputs.append( $input );
@@ -114,10 +114,10 @@ var SynthViewController = ( function() {
 
 			for ( uuid in modelObject.OUTPUTIDs ) {
 				$output = $('<div>')
-					.addClass('output audioOutput')
-						.text( 'output ' + modelObject.OUTPUTIDs [ uuid ] )
-						.attr( 'data-type' , 'output' )
-						.attr( 'data-output' , uuid );
+					.addClass('sprite output audioOutput')
+					.text( modelObject.OUTPUTIDs [ uuid ] )
+					.attr( 'data-type' , 'output' )
+					.attr( 'data-output' , uuid );
 				$outputs.append( $output );
 			};
 

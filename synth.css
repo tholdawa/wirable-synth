@@ -42,14 +42,11 @@
 .label {
 	display: block;
 	height: 15%;
-	width: 100px;
-	margin-left: auto;
-	margin-right: auto;
 }
 
 
 .AudioNode {
-	width: 200px;
+	width: 100px;
 	height: auto;
 	white-space: nowrap;
 	margin: 10px 50px 10px 50px;
@@ -71,18 +68,19 @@
 	height: 100%;
 	width: 48%;
 	margin: 1% 1% 1% 1%;
+	white-space: normal;
 }
 
 .input {
 	border: 1px solid green;
 	float: left;
-	left: -25px;
+	left: -15px;
 }
 
 .output {
 	border: 1px solid red;
 	float: right;
-	right: -25px;
+	right: -15px;
 }
 
 
@@ -91,4 +89,16 @@
 	display: block;
 	position: relative;
 	margin: 2px;
+}
+
+.audioInput, .audioOutput {
+	background: white url(sprite.png) no-repeat 0 -75px;
+	height: 25px;
+	width: 25px;
+	border: 1px solid black;
+	border-radius: 5px;
+	text-align: center;
+	line-height: 1.5em;
+	color: lightgray;
+	text-shadow: yellow 1px 1px 10px;
 }
