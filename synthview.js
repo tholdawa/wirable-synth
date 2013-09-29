@@ -1,10 +1,10 @@
-/*global $*/
+/*global $, jsPlumb*/
 
 var SynthViewController = ( function() {
 	var viewObjectMakers;
 
 	function SynthViewController( model ) {
-		this.contents = [];
+		this.contents = {};
 		this.model = model;
 		this.container = document.body;
 		model && (model.controller = this);
@@ -59,9 +59,10 @@ var SynthViewController = ( function() {
 
 	var	updateActions = {
 		add : function ( update ) {
-			var $viewObj =  getViewObject( update.object) ;
+			var $viewObj =  getViewObject( update.object );
 			this.$view.append( $viewObj );
-			this.contents.push({view : $viewObj, model :  update.object });
+			this.contents [ update.object.UUID ] =
+				{view : $viewObj, model :  update.object };
 		}
 	};
 
@@ -97,9 +98,11 @@ var SynthViewController = ( function() {
 				param = modelObject.PARAMIDs [ uuid ];
 				$param = $('<div>')
 					.addClass('input paramInput')
-					.text( 'Param: ' +  param.name )
+					.text(  param.name )
 					.attr( 'data-type' , 'param' )
-					.attr( 'data-input' , uuid );
+					.attr( 'data-input' , uuid )
+					.attr( 'id' , uuid )
+					.prepend('<div class="sprite param">');
 				$inputs.append( $param );
 			};
 
@@ -108,7 +111,8 @@ var SynthViewController = ( function() {
 					.addClass('sprite input audioInput')
 					.text( modelObject.INPUTIDs [ uuid ] )
 					.attr( 'data-type' , 'input' )
-					.attr( 'data-input' , uuid );
+					.attr( 'data-input' , uuid )
+					.attr( 'id' , uuid );
 				$inputs.append( $input );
 			};
 
@@ -117,11 +121,15 @@ var SynthViewController = ( function() {
 					.addClass('sprite output audioOutput')
 					.text( modelObject.OUTPUTIDs [ uuid ] )
 					.attr( 'data-type' , 'output' )
-					.attr( 'data-output' , uuid );
+					.attr( 'data-output' , uuid )
+					.attr( 'id', uuid );
 				$outputs.append( $output );
 			};
 
 			$viewObject.append( $inOuts.append( $inputs , $outputs ) );
+			jsPlumb.draggable( $viewObject , {
+				containment: 'parent'
+			});
 
 			return $viewObject;
 		},

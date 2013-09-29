@@ -1,6 +1,10 @@
+/*global jsPlumb, $*/
+
 $(function() {
 	var model = new SynthModel();
 	var controller = new SynthViewController( model );
+
+	jsPlumb.Defaults.Container = $('body');
 
 	window.model = model;
 

@@ -7,7 +7,7 @@ var SynthModel = ( function() {
 	function SynthModel( controller ) {
 		this.inputs = {};
 		this.outputs = {};
-		this.components = [];
+		this.components = {};
 		this.controller = controller;
 		controller && (controller.model = this);
 
@@ -32,15 +32,6 @@ var SynthModel = ( function() {
 
 	SynthModel.prototype.add = function( obj ){
 		var prop;
-
-		function assignIds ( howMany , where ) {
-			(0).upto( howMany  - 1 )
-				.forEach(
-					function(i) {
-						where [ util.uuid() ] = i;
-					});
-		};
-
 
 		if ( obj instanceof AudioNode ) {
 			obj.PARAMIDs = {};
@@ -78,15 +69,13 @@ var SynthModel = ( function() {
 						"Index" : i
 					};
 				}.bind( this ));
-
-
 		}
 
-
+		obj.UUID = util.uuid();
 
 
 		this.controller.update({ type : 'add', object : obj });
-		this.components.push( obj );
+		this.components [ obj.UUID ] = obj;
 	};
 
 	return SynthModel;
