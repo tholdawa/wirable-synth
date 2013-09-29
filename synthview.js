@@ -28,10 +28,10 @@ var SynthViewController = ( function() {
 		$( this.container ).append( this.$view );
 
 		// click handler for components
-		this.$view.on('click', '.component', function () {
-			console.log('cliked');
-			model.manipulate( $( this ).text() );
-		});
+		// this.$view.on('click', '.component', function () {
+		// 	console.log('cliked');
+		// 	model.manipulate( $( this ).text() );
+		// });
 
 
 	};
@@ -122,13 +122,13 @@ var SynthViewController = ( function() {
 
 
 	var	updateActions = {
-		add : function ( update ) {
+		add : function( update ) {
 			var $viewObj =  getViewObject.call( this , update.object );
 			this.$view.append( $viewObj );
 			this.contents [ update.object.UUID ] =
 				{view : $viewObj, model :  update.object };
 		},
-		connect : function ( update ) {
+		connect : function( update ) {
 			var src = update.sourceId,
 				tgt = update.targetId;
 			console.log( 'View Got connection : ' , update );
@@ -145,6 +145,12 @@ var SynthViewController = ( function() {
 					overlays : [ "Arrow" ]
 				});
 			}
+		},
+		startStop : function( update ) {
+			var viewRep = this.contents [ update.targetId ].view;
+			update.playing ?
+				viewRep.addClass('playing') :
+				viewRep.removeClass('playing');
 		}
 	};
 
@@ -225,6 +231,18 @@ var SynthViewController = ( function() {
 			jsPlumb.draggable( $viewObject , {
 				containment: 'parent'
 			});
+
+			if ( modelObject instanceof OscillatorNode ) {
+				$viewObject.append(
+					$('<div>').addClass('sprite button play')
+						.click( function() {
+							this.model.manipulate({
+								type : 'startStop',
+								id : modelObject.UUID
+							});
+						}.bind( this ))
+					);
+			}
 
 			return $viewObject;
 		},

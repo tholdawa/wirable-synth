@@ -24,6 +24,26 @@ var SynthModel = ( function() {
 		connect : function( change ) {
 			this.connect( change.sourceId , change.targetId );
 		},
+		startStop : function( change ) {
+			var playing,
+				tgt = this.components [ change.id ];
+			assert( tgt , 'No audio component found');
+			playing = ( tgt.playbackState === 1 );
+
+			if (playing) {
+				tgt.stop(0);
+			}
+			else {
+				tgt.start(0);
+			}
+
+			this.controller.update({
+				type : 'startStop',
+				targetId : change.id,
+				playing : !playing
+			});
+
+		},
 		undefined : function ( value ) {
 			console.log('Unknown change : ',  value );
 		}
