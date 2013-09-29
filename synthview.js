@@ -8,11 +8,13 @@ var SynthViewController = ( function() {
 		this.contents = {};
 		this.inputs = {};
 		this.outputs = {};
+		this.connections = {};
 		this.model = model;
 		this.container = document.body;
 		model && (model.controller = this);
 
 		this.initView();
+		this.initJsPlumb();
 
 	}
 
@@ -25,14 +27,55 @@ var SynthViewController = ( function() {
 		this.$view = getViewObject( model );
 		$( this.container ).append( this.$view );
 
-		//this.$output = $( getViewObject( model.destination ) );
-		//this.$view.append( this.$output );
-
 		// click handler for components
 		this.$view.on('click', '.component', function () {
 			console.log('cliked');
 			model.manipulate( $( this ).text() );
 		});
+
+
+	};
+
+	SynthViewController.prototype.initJsPlumb = function() {
+
+		jsPlumb.Defaults.Container = $('body');
+		jsPlumb.Defaults.Anchors = ['Right', 'Left'];
+		jsPlumb.Defaults.Overlays = ['PlainArrow'];
+
+		jsPlumb.bind('connection', function( info ) {
+			var src = info.sourceId,
+				tgt = info.targetId,
+				cxn = {};
+
+
+			console.log( 'Connection made in view: ', info );
+
+			if ( this.connections [ src ] &&
+				 this.connections [ src ] [ tgt ] ) {
+					 setTimeout( function() {
+						 jsPlumb.detach( info.connection , {
+							 fireEvent : false
+						 });
+
+						 console.log( 'duplicate connection detached' ,
+									this.connections);
+					 }.bind( this ), 0);
+				 }
+			else {
+				cxn [ src ] = {};
+				cxn [ src ] [ tgt ] = true;
+				$.extend( true, this.connections, cxn );
+				console.log('Connection added to view: ', this.connections );
+			}
+
+		}.bind( this ));
+
+		jsPlumb.bind('connectionDetached', function( info ) {
+			delete this.connections [ info.sourceId ] [ info.targetId ];
+			console.log('Connection removed from view\'s connections' ,
+						this.connections );
+		}.bind( this ));
+
 	};
 
 	SynthViewController.prototype.drawToolbar = function(){
@@ -70,8 +113,8 @@ var SynthViewController = ( function() {
 		connect : function ( update ) {
 			console.log( 'Got connection : ' + update.toString() );
 			jsPlumb.connect({
-				source : this.outputs [ update.sourceID ] ,
-				target : this.inputs [ update.targetID ] ,
+				source : this.outputs [ update.sourceId ] ,
+				target : this.inputs [ update.targetId ] ,
 				anchors : ['Right', 'Left'] ,
 				overlays : [ "Arrow" ]
 			});
@@ -90,10 +133,10 @@ var SynthViewController = ( function() {
 				.append('<div class="label">' +
 						modelObject.constructor.name + '</div>');
 		},
-		default : function( modelObject ) {
-			return viewObjectMakers._baseComponent( modelObject )
-				.addClass('unknown');
-		},
+	default : function( modelObject ) {
+		return viewObjectMakers._baseComponent( modelObject )
+			.addClass('unknown');
+	},
 		AudioNode : function( modelObject ) {
 			var uuid,
 				param,
@@ -106,8 +149,8 @@ var SynthViewController = ( function() {
 				$outputs = $('<div>').addClass('outputs container'),
 				$inOuts = $('<div>').addClass('inOuts');
 
-			for ( uuid in modelObject.PARAMIDs ) {
-				param = modelObject.PARAMIDs [ uuid ];
+			for ( uuid in modelObject.ParamIds ) {
+				param = modelObject.ParamIds [ uuid ];
 				$param = $('<div>')
 					.addClass('input paramInput')
 					.text(  param.name )
@@ -117,28 +160,38 @@ var SynthViewController = ( function() {
 					.prepend('<div class="sprite param">');
 				$inputs.append( $param );
 				this.inputs [ uuid ] = $param;
+
+				jsPlumb.makeTarget( $param , {
+					isTarget : true
+				});
 			};
 
-			for ( uuid in modelObject.INPUTIDs ) {
+			for ( uuid in modelObject.InputIds ) {
 				$input = $('<div>')
 					.addClass('sprite input audioInput')
-					.text( modelObject.INPUTIDs [ uuid ] )
+					.text( modelObject.InputIds [ uuid ] )
 					.attr( 'data-type' , 'input' )
 					.attr( 'data-input' , uuid )
 					.attr( 'id' , uuid );
 				$inputs.append( $input );
 				this.inputs [ uuid ] = $input;
+
+				jsPlumb.makeTarget( $input , {
+					isTarget : true
+				});
 			};
 
-			for ( uuid in modelObject.OUTPUTIDs ) {
+			for ( uuid in modelObject.OutputIds ) {
 				$output = $('<div>')
 					.addClass('sprite output audioOutput')
-					.text( modelObject.OUTPUTIDs [ uuid ] )
+					.text( modelObject.OutputIds [ uuid ] )
 					.attr( 'data-type' , 'output' )
 					.attr( 'data-output' , uuid )
 					.attr( 'id', uuid );
 				$outputs.append( $output );
 				this.outputs [ uuid ] = $output;
+
+				jsPlumb.makeSource( $output );
 			};
 
 			$viewObject.append( $inOuts.append( $inputs , $outputs ) );

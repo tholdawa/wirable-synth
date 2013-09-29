@@ -36,26 +36,26 @@ var SynthModel = ( function() {
 		var prop;
 
 		if ( obj instanceof AudioNode ) {
-			obj.PARAMIDs = {};
+			obj.ParamIds = {};
 
 			for ( prop in obj ) {
 				if ( obj.hasOwnProperty( prop ) &&
 				   obj [ prop ] instanceof AudioParam ) {
 					   var uuid = util.uuid();
-					   obj.PARAMIDs [ uuid ] = obj [ prop ];
-					   obj [ prop ].PARAMID = uuid;
+					   obj.ParamIds [ uuid ] = obj [ prop ];
+					   obj [ prop ].ParamId = uuid;
 					   this.inputs [ uuid ] = {
 						   'AudioParam' : obj [ prop ]
 					   };
 				}
 			}
 
-			obj.INPUTIDs = {}, obj.OUTPUTIDs = {};
+			obj.InputIds = {}, obj.OutputIds = {};
 
 			(0).upto( obj.numberOfInputs - 1 ).forEach(
 				function( i ) {
 					var uuid = util.uuid();
-					obj.INPUTIDs [ uuid ] = i;
+					obj.InputIds [ uuid ] = i;
 					this.inputs [ uuid ] = {
 						"AudioNode" : obj,
 						"index" : i
@@ -65,7 +65,7 @@ var SynthModel = ( function() {
 			(0).upto( obj.numberOfOutputs - 1 ).forEach(
 				function( i ) {
 					var uuid = util.uuid();
-					obj.OUTPUTIDs [ uuid ] = i;
+					obj.OutputIds [ uuid ] = i;
 					this.outputs [ uuid ] = {
 						"AudioNode" : obj,
 						"index" : i
@@ -79,9 +79,9 @@ var SynthModel = ( function() {
 		this.controller.update({ type : 'add', object : obj });
 	};
 
-	SynthModel.prototype.connect = function( sourceID , targetID ) {
-		var source = this.outputs [ sourceID ],
-			target = this.inputs [ targetID ];
+	SynthModel.prototype.connect = function( sourceId , targetId ) {
+		var source = this.outputs [ sourceId ],
+			target = this.inputs [ targetId ];
 
 		assert( typeof source !== 'undefined', 'invalid source' );
 		assert( typeof target !== 'undefined' , 'invalid target' );
@@ -98,14 +98,14 @@ var SynthModel = ( function() {
 			}
 		}
 
-		this.connections [ sourceID ] =
-			this.connections [ sourceID ] || {};
-		this.connections [ sourceID ] [ targetID ] = true;
+		this.connections [ sourceId ] =
+			this.connections [ sourceId ] || {};
+		this.connections [ sourceId ] [ targetId ] = true;
 
 		this.controller.update({
 			type : 'connect',
-			sourceID : sourceID,
-			targetID : targetID
+			sourceId : sourceId,
+			targetId : targetId
 		});
 
 
