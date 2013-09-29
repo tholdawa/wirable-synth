@@ -66,6 +66,15 @@ var SynthViewController = ( function() {
 				cxn [ src ] [ tgt ] = true;
 				$.extend( true, this.connections, cxn );
 				console.log('Connection added to view: ', this.connections );
+
+				setTimeout( function() {
+					this.model.manipulate({
+						type : 'connect',
+						sourceId : src,
+						targetId :tgt
+					});
+				}.bind( this ), 0);
+
 			}
 
 		}.bind( this ));
@@ -74,6 +83,15 @@ var SynthViewController = ( function() {
 			delete this.connections [ info.sourceId ] [ info.targetId ];
 			console.log('Connection removed from view\'s connections' ,
 						this.connections );
+
+			setTimeout( function() {
+				this.model.manipulate({
+					type : 'disconnect',
+					sourceId : info.sourceId,
+					targetId : info.targetId
+				});
+			}.bind( this ), 0);
+
 		}.bind( this ));
 
 	};
@@ -111,13 +129,22 @@ var SynthViewController = ( function() {
 				{view : $viewObj, model :  update.object };
 		},
 		connect : function ( update ) {
-			console.log( 'Got connection : ' + update.toString() );
-			jsPlumb.connect({
-				source : this.outputs [ update.sourceId ] ,
-				target : this.inputs [ update.targetId ] ,
-				anchors : ['Right', 'Left'] ,
-				overlays : [ "Arrow" ]
-			});
+			var src = update.sourceId,
+				tgt = update.targetId;
+			console.log( 'View Got connection : ' , update );
+			if ( this.connections [ src ] &&
+				 this.connections [ src ] [ tgt ] ) {
+					 console.log( 'Connection already exists in view.' +
+								  'Ignoring model\'s connect update');
+				 }
+			else {
+				jsPlumb.connect({
+					source : this.outputs [ update.sourceId ] ,
+					target : this.inputs [ update.targetId ] ,
+					anchors : ['Right', 'Left'] ,
+					overlays : [ "Arrow" ]
+				});
+			}
 		}
 	};
 

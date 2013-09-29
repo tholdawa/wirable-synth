@@ -21,14 +21,19 @@ var SynthModel = ( function() {
 		add : function( change ) {
 			this.add ( context [ change.value ]() );
 		},
+		connect : function( change ) {
+			this.connect( change.sourceId , change.targetId );
+		},
 		undefined : function ( value ) {
-			console.log('Unknown change : ' + value.toString() );
+			console.log('Unknown change : ',  value );
 		}
 	};
 
 	SynthModel.prototype.manipulate = function( change ) {
 		//console.log("Model got change: " + change );
-		var type = change.type || 'undefined';
+		var type = (change.type && change.type in manipulators) ?
+				change.type :
+				'undefined';
 		manipulators [ type ].bind( this )( change );
 	};
 
@@ -102,13 +107,25 @@ var SynthModel = ( function() {
 			this.connections [ sourceId ] || {};
 		this.connections [ sourceId ] [ targetId ] = true;
 
+		console.log('Model\'s connections: ', this.connections );
+
 		this.controller.update({
 			type : 'connect',
 			sourceId : sourceId,
 			targetId : targetId
 		});
 
+	};
 
+	SynthModel.prototype.disconnect = function( sourceId, targetId ) {
+
+
+
+		// this.controller.update({
+		// 	type : 'disconnect',
+		// 	sourceId : sourceId,
+		// 	targetId : targetId
+		// });
 	};
 
 	return SynthModel;
