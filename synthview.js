@@ -1,10 +1,13 @@
 /*global $, jsPlumb*/
+'use strict';
 
 var SynthViewController = ( function() {
 	var viewObjectMakers;
 
 	function SynthViewController( model ) {
 		this.contents = {};
+		this.inputs = {};
+		this.outputs = {};
 		this.model = model;
 		this.container = document.body;
 		model && (model.controller = this);
@@ -59,15 +62,19 @@ var SynthViewController = ( function() {
 
 	var	updateActions = {
 		add : function ( update ) {
-			var $viewObj =  getViewObject( update.object );
+			var $viewObj =  getViewObject.call( this , update.object );
 			this.$view.append( $viewObj );
 			this.contents [ update.object.UUID ] =
 				{view : $viewObj, model :  update.object };
 		},
 		connect : function ( update ) {
 			console.log( 'Got connection : ' + update.toString() );
-			$('#' + update.sourceID + ', #' + update.targetID)
-				.addClass('connected');
+			jsPlumb.connect({
+				source : this.outputs [ update.sourceID ] ,
+				target : this.inputs [ update.targetID ] ,
+				anchors : ['Right', 'Left'] ,
+				overlays : [ "Arrow" ]
+			});
 		}
 	};
 
@@ -109,6 +116,7 @@ var SynthViewController = ( function() {
 					.attr( 'id' , uuid )
 					.prepend('<div class="sprite param">');
 				$inputs.append( $param );
+				this.inputs [ uuid ] = $param;
 			};
 
 			for ( uuid in modelObject.INPUTIDs ) {
@@ -119,6 +127,7 @@ var SynthViewController = ( function() {
 					.attr( 'data-input' , uuid )
 					.attr( 'id' , uuid );
 				$inputs.append( $input );
+				this.inputs [ uuid ] = $input;
 			};
 
 			for ( uuid in modelObject.OUTPUTIDs ) {
@@ -129,6 +138,7 @@ var SynthViewController = ( function() {
 					.attr( 'data-output' , uuid )
 					.attr( 'id', uuid );
 				$outputs.append( $output );
+				this.outputs [ uuid ] = $output;
 			};
 
 			$viewObject.append( $inOuts.append( $inputs , $outputs ) );
@@ -154,7 +164,8 @@ var SynthViewController = ( function() {
 
 
 		$viewObject = ( viewObjectMakers [ viewType ] ||
-				  viewObjectMakers.default )( modelObject );
+						viewObjectMakers.default )
+			.call( this , modelObject );
 
 		return $viewObject;
 	}

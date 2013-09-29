@@ -1,4 +1,5 @@
 /*global AudioContext, util*/
+'use strict';
 
 var SynthModel = ( function() {
 

@@ -34,6 +34,7 @@
 }
 
 .component {
+	z-index: 5;
 	border: 1px solid black;
 	border-radius: 10px;
 	background-color: lightgray;
@@ -57,7 +58,6 @@
 	width: auto;
 	height: auto;
 	white-space: nowrap;
-	margin: 10px 25px 10px 25px;
 }
 
 .AudioDestinationNode {
@@ -74,30 +74,31 @@
 	vertical-align: middle;
 	height: 100%;
 	width: auto;
-	margin: 1% 1% 1% 1%;
 	white-space: normal;
 }
 
 .input {
 	border: 1px solid green;
+	margin-right: 10px;
 	float: left;
 	clear: left;
-	left: -15px;
 }
 
 .output {
 	border: 1px solid red;
+	margin-left: 10px;
 	float: right;
 	clear: right;
-	right: -15px;
 }
 
 
 .input, .output {
+	margin-top: 3px;
+	margin-bottom: 3px;
+
 	background-color: gray;
 	display: block;
 	position: relative;
-	margin: 2px;
 	height: 25px;
 	border-radius: 5px;
 
@@ -123,6 +124,6 @@
 
 }
 
-.connected {
-	outline: 3px outset pink;
+._jsPlumb_endpoint, ._jsPlumb_connector, ._jsPlumb_overlay {
+	z-index: 0;
 }
