@@ -171,7 +171,18 @@ var SynthViewController = ( function() {
 			.addClass('unknown');
 	},
 		AudioNode : function( modelObject ) {
-			var uuid,
+			function getParamManipulator( id ) {
+				return function () {
+					model.manipulate({
+						type : 'setParam',
+						targetId : id,
+						value : this.value
+					});
+				};
+			}
+
+			var model = this.model,
+				uuid,
 				param,
 				$param,
 				$input,
@@ -191,6 +202,13 @@ var SynthViewController = ( function() {
 					.attr( 'data-input' , uuid )
 					.attr( 'id' , uuid )
 					.prepend('<div class="sprite param">');
+
+				$param.append(
+					$( '<input type="text" class="paramField">')
+						.val( param.value )
+						.change( getParamManipulator(
+							uuid) )
+				);
 				$inputs.append( $param );
 				this.inputs [ uuid ] = $param;
 

@@ -44,6 +44,11 @@ var SynthModel = ( function() {
 			});
 
 		},
+		setParam : function( change ) {
+			var tgt = change.targetId,
+				param = this.inputs [ tgt ].AudioParam;
+			param.setValueAtTime( change.value, 0);
+		},
 		undefined : function ( value ) {
 			console.log('Unknown change : ',  value );
 		}

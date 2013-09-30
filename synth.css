@@ -75,6 +75,7 @@
 .inOuts {
 	position: relative;
 	width: 100%;
+	min-height: 50px;
 }
 
 .container {
@@ -88,6 +89,11 @@
 
 .inputs {
 	float: left;
+}
+
+.outputs {
+	right: 0;
+	float: right;
 }
 
 
@@ -130,6 +136,10 @@
 	width: 23px;
 	display: inline-block;
 	background-position: -1px -26px;
+}
+.paramField {
+	height: 1em;
+	width: 25px;
 }
 
 .audioInput, .audioOutput {
