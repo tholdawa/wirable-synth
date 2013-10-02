@@ -26,13 +26,6 @@
 .createBiquadFilter {
 	background-position: -1px -50px;
 }
-.play {
-	background-position: -2px -125px;
-}
-
-.OscillatorNode.playing .play {
-	background-color: green;
-}
 
 .view {
 	border: 1px solid black;

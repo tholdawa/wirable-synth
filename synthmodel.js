@@ -24,26 +24,6 @@ var SynthModel = ( function() {
 		connect : function( change ) {
 			this.connect( change.sourceId , change.targetId );
 		},
-		startStop : function( change ) {
-			var playing,
-				tgt = this.components [ change.id ];
-			assert( tgt , 'No audio component found');
-			playing = ( tgt.playbackState === 1 );
-
-			if (playing) {
-				tgt.stop(0);
-			}
-			else {
-				tgt.start(0);
-			}
-
-			this.controller.update({
-				type : 'startStop',
-				targetId : change.id,
-				playing : !playing
-			});
-
-		},
 		setParam : function( change ) {
 			this.setParam( change.targetId , change.value );
 		},
@@ -62,6 +42,8 @@ var SynthModel = ( function() {
 
 	SynthModel.prototype.add = function( obj ){
 		var prop;
+
+		obj.start && obj.start( 0 );
 
 		if ( obj instanceof AudioNode ) {
 			obj.ParamIds = {};
@@ -150,6 +132,7 @@ var SynthModel = ( function() {
 			value : value
 		});
 	};
+
 
 	SynthModel.prototype.disconnect = function( sourceId, targetId ) {
 

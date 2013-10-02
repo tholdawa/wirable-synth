@@ -146,12 +146,6 @@ var SynthViewController = ( function() {
 				});
 			}
 		},
-		startStop : function( update ) {
-			var viewRep = this.contents [ update.targetId ].view;
-			update.playing ?
-				viewRep.addClass('playing') :
-				viewRep.removeClass('playing');
-		},
 		setParam : function( update ) {
 			var $paramView = this.inputs [ update.targetId ];
 			$paramView.find('.paramField')
@@ -254,18 +248,6 @@ var SynthViewController = ( function() {
 			jsPlumb.draggable( $viewObject , {
 				containment: 'parent'
 			});
-
-			if ( modelObject instanceof OscillatorNode ) {
-				$viewObject.append(
-					$('<div>').addClass('sprite button play')
-						.click( function() {
-							this.model.manipulate({
-								type : 'startStop',
-								id : modelObject.UUID
-							});
-						}.bind( this ))
-					);
-			}
 
 			return $viewObject;
 		},
