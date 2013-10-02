@@ -131,8 +131,11 @@
 	background-position: -1px -26px;
 }
 .paramField {
+	position: relative;
+	bottom: .25em;
+	margin-right: .25em;
 	height: 1em;
-	width: 25px;
+	width: 22px;
 }
 
 .audioInput, .audioOutput {
