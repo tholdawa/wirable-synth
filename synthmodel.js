@@ -45,9 +45,7 @@ var SynthModel = ( function() {
 
 		},
 		setParam : function( change ) {
-			var tgt = change.targetId,
-				param = this.inputs [ tgt ].AudioParam;
-			param.setValueAtTime( change.value, 0);
+			this.setParam( change.targetId , change.value );
 		},
 		undefined : function ( value ) {
 			console.log('Unknown change : ',  value );
@@ -140,6 +138,17 @@ var SynthModel = ( function() {
 			targetId : targetId
 		});
 
+	};
+
+	SynthModel.prototype.setParam = function( paramId , val ){
+		var param = this.inputs [ paramId ].AudioParam;
+		param.setValueAtTime( val , 0 );
+
+		this.controller.update({
+			type : 'setParam',
+			targetId : paramId,
+			value : val
+		});
 	};
 
 	SynthModel.prototype.disconnect = function( sourceId, targetId ) {

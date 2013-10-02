@@ -151,6 +151,11 @@ var SynthViewController = ( function() {
 			update.playing ?
 				viewRep.addClass('playing') :
 				viewRep.removeClass('playing');
+		},
+		setParam : function( update ) {
+			var $paramView = this.inputs [ update.targetId ];
+			$paramView.find('.paramField')
+				.val( update.value );
 		}
 	};
 
