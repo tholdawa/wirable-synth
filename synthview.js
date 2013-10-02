@@ -63,7 +63,7 @@ var SynthViewController = ( function() {
 				 }
 			else {
 				cxn [ src ] = {};
-				cxn [ src ] [ tgt ] = true;
+				cxn [ src ] [ tgt ] = info.connection;
 				$.extend( true, this.connections, cxn );
 				console.log('Connection added to view: ', this.connections );
 
@@ -146,6 +146,19 @@ var SynthViewController = ( function() {
 				});
 			}
 		},
+		disconnect : function( update ) {
+			var src = update.sourceId,
+				tgt = update.targetId;
+
+			if ( this.connections [ src ] &&
+				 this.connections [ src ] [tgt ] ) {
+					 console.log( "deleting connection in view update");
+
+					 jsPlumb.detach( this.connections [ src ] [ tgt ],
+									 { fireEvent : false });
+					 delete this.connections [ src ] [ tgt ];
+				 }
+		},
 		setParam : function( update ) {
 			var $paramView = this.inputs [ update.targetId ];
 			$paramView.find('.paramField')
@@ -205,8 +218,8 @@ var SynthViewController = ( function() {
 				$param.append(
 					$( '<input type="text" class="paramField">')
 						.val( param.value )
-						.change( getParamManipulator(
-							uuid) )
+						.change( getParamManipulator( uuid ) )
+						.keyup( getParamManipulator( uuid ) )
 				);
 				$inputs.append( $param );
 				this.inputs [ uuid ] = $param;

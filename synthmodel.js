@@ -24,6 +24,9 @@ var SynthModel = ( function() {
 		connect : function( change ) {
 			this.connect( change.sourceId , change.targetId );
 		},
+		disconnect : function( change ) {
+			this.disconnect( change.sourceId , change.targetId );
+		},
 		setParam : function( change ) {
 			this.setParam( change.targetId , change.value );
 		},
@@ -135,14 +138,37 @@ var SynthModel = ( function() {
 
 
 	SynthModel.prototype.disconnect = function( sourceId, targetId ) {
+		// api disconnects all connections from an output --
+		// so we have to reconnect the ones we still want.
+		console.log( 'disconnecting in model' );
+		var tmpConnections = this.connections [ sourceId ],
+			source = this.outputs [ sourceId ],
+			tmpId,
+			target;
+		delete tmpConnections [ targetId ];
 
+		source.AudioNode.disconnect( source.index );
 
+		for ( tmpId in tmpConnections ) {
+			target = this.inputs [ tmpId ];
+			if ( target.AudioNode ) {
+				source.AudioNode.connect( target.AudioNode ,
+										  source.index ,
+										  target.index );
+			}
+			else if ( target.AudioParam ) {
+				source.AudioNode.connect( target.AudioParam ,
+										  source.index );
+			}
+		}
 
-		// this.controller.update({
-		// 	type : 'disconnect',
-		// 	sourceId : sourceId,
-		// 	targetId : targetId
-		// });
+		delete this.connections [ sourceId ] [ targetId ];
+
+		this.controller.update({
+			type : 'disconnect',
+			sourceId : sourceId,
+			targetId : targetId
+		});
 	};
 
 	return SynthModel;
