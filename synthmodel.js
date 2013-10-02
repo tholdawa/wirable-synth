@@ -140,14 +140,14 @@ var SynthModel = ( function() {
 
 	};
 
-	SynthModel.prototype.setParam = function( paramId , val ){
+	SynthModel.prototype.setParam = function( paramId , value ){
 		var param = this.inputs [ paramId ].AudioParam;
-		param.setValueAtTime( val , 0 );
+		param.setValueAtTime( value , 0 );
 
 		this.controller.update({
 			type : 'setParam',
 			targetId : paramId,
-			value : val
+			value : value
 		});
 	};
 
